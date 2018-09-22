@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node .",
     "test": "jest",
-    "coverage": "npm test -- --coverage",
+    "coverage": "yarn test -- --coverage",
     "postcoverage": "opn coverage/lcov-report/index.html",
     "dev": "nodemon -i \"*.test.js\" .",
     "prod": "cross-env NODE_ENV=production nodemon -i \"*.test.js\" -r dotenv-safe/config .",
