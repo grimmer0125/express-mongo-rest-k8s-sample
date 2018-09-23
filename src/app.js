@@ -8,6 +8,8 @@ const app = express(apiRoot, api)
 const server = http.createServer(app)
 
 mongoose.connect(mongo.uri)
+
+// plugin bluebird promise in mongoose
 mongoose.Promise = Promise
 
 setImmediate(() => {

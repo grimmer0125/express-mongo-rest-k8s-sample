@@ -1,36 +1,125 @@
 import { success, notFound } from '../../services/response/'
 import { Vdobject } from '.'
 
-export const create = ({ bodymen: { body } }, res, next) =>
-  Vdobject.create(body)
-    .then((vdobject) => vdobject.view(true))
-    .then(success(res, 201))
-    .catch(next)
+export const create = (req, res, next) => {
+  let myKey = null
+  let value = null
+  for (const key in req.body) {
+    if (!myKey) {
+      myKey = key
+      value = req.body[key]
+    } else {
+      myKey = null
+      value = null
+      res.status(400).send('only allow one mykey:value pair!')
+      return
+    }
+  }
 
-export const index = ({ querymen: { query, select, cursor } }, res, next) =>
-  Vdobject.find(query, select, cursor)
+  if (!myKey) {
+    res.status(400).send('no enough data!')
+    return
+  }
+
+  if (typeof value !== 'object' && typeof value !== 'string') {
+    res.status(400).send('value should be string or object!')
+    return
+  }
+
+  const timestamp = Math.floor(Date.now() / 1000)
+
+  Vdobject.findOne({key: myKey})
+    .then((doc) => {
+      if (doc) {
+        console.log('mykey exist')
+        // case 3: if the timestamp exist, update the versions field
+        for (const version of doc.versions) {
+          if (version.timestamp === timestamp) {
+            console.log('same key and same timestamp, two writing at the same second')
+            // just update the value field
+            version.timestamp = timestamp
+            version.value = value
+            doc.save()
+              .then(() => { return { key: myKey, value, timestamp } })
+              .then(success(res))
+              .catch(next)
+            return
+          }
+        }
+
+        // case 2, add 1 version to this object
+        console.log('add 1 version to this object')
+        doc.versions.push({value, timestamp})
+        doc.save()
+          .then(() => { return { key: myKey, value, timestamp } })
+          .then(success(res))
+          .catch(next)
+      } else {
+        // case 1: create
+        console.log('create !!' + myKey)
+        Vdobject.create({key: myKey, versions: [{value, timestamp}]})
+          .then(() => { return { key: myKey, value, timestamp } })
+          .then(success(res, 201))
+          .catch(next)
+      }
+    })
+}
+
+// for debugging
+export const index = (req, res, next) => {
+  Vdobject.find()
     .then((vdobjects) => vdobjects.map((vdobject) => vdobject.view()))
     .then(success(res))
     .catch(next)
+}
 
-export const show = ({ params }, res, next) =>
-  Vdobject.findById(params.id)
-    .then(notFound(res))
-    .then((vdobject) => vdobject ? vdobject.view() : null)
-    .then(success(res))
-    .catch(next)
+export const show = (req, res, next) => {
+  const { querymen: { query: { timestamp } } } = req
+  const { params } = req
+  if (typeof timestamp === 'number' && timestamp > 0) {
+    console.log('query timestamp !!')
 
-export const update = ({ bodymen: { body }, params }, res, next) =>
-  Vdobject.findById(params.id)
-    .then(notFound(res))
-    .then((vdobject) => vdobject ? Object.assign(vdobject, body).save() : null)
-    .then((vdobject) => vdobject ? vdobject.view(true) : null)
-    .then(success(res))
-    .catch(next)
-
-export const destroy = ({ params }, res, next) =>
-  Vdobject.findById(params.id)
-    .then(notFound(res))
-    .then((vdobject) => vdobject ? vdobject.remove() : null)
-    .then(success(res, 204))
-    .catch(next)
+    // NOTE: aggregation might be slower than
+    // interating by self (O(n)), n is the size of versions
+    // just for testing
+    Vdobject.aggregate(
+      [
+        { $match: {key: params.id}},
+        { $unwind: '$versions'},
+        { $match: { 'versions.timestamp': { $lte: timestamp }}},
+        { $sort: {
+          'versions.timestamp': -1
+        }},
+        { $limit: 1 },
+        { $project: {value: '$versions.value'}}]
+    )
+      .then((vdobjects) => {
+        if (vdobjects.length > 0) {
+          return {value: vdobjects[0].value}
+        } else {
+          console.log('no matched timestamp or mykey!!')
+          notFound(res)()
+        }
+      }).then(success(res))
+      .catch(next)
+  } else {
+    Vdobject.findOne({key: params.id})
+      .then(notFound(res))
+      .then((vdobject) => {
+        if (vdobject) {
+          // find the most recent value
+          if (vdobject.versions && vdobject.versions.length > 0) {
+            const version = vdobject.versions[vdobject.versions.length - 1]
+            if (version.value) {
+              return {value: version.value}
+            } else {
+              console.log('version exist but value disappear, something wrong !!')
+            }
+          } else {
+            console.log('no versions !!')
+          }
+        }
+      }).then(success(res))
+      .catch(next)
+  }
+}
