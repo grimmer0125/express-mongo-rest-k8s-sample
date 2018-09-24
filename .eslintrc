@@ -4,7 +4,6 @@
     "standard"
   ],
   "env": {
-    "jest": true,
-    "jasmine": true
+    "jest": true
   }
 }
