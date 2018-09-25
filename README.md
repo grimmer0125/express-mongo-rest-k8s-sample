@@ -84,6 +84,18 @@ Then use `static public domain name` to test.
 
 For example: `kubectl set image deployment/web-controller web=grimmer0125/express-mongo-rest-sample:0.9`
 
+### Stop or add more running K8s (Web-Controller) pods 
+
+`kubectl scale deployment web-controller --replicas=n`, n = 0 for stop. 
+
+### Other K8s commands & tips
+
+- gcloud compute instances list
+- gcloud container clusters list
+- gcloud container clusters get-credentials cluster_name
+
+`selector` field in K8s (e.g. `web-service.yaml`) means it selects other resources to use by this label filter. 
+
 ## Backlog
 
 - Add authenticaion.
