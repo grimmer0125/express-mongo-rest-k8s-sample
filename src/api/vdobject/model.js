@@ -1,14 +1,16 @@
 import mongoose, { Schema } from 'mongoose'
 
 const vdobjectSchema = new Schema({
-  // version: Schema.Types.Mixed (<- can not be used for real data type, mongoose may fail to save)
-  // so the type should be clearly specifed
   versions: [{ _id: false,
     timestamp: Number,
-    // string or object. mongoose will convert it to the specified type
+
+    /**
+     * @type {String or Object}
+     */
     value: Schema.Types.Mixed }],
   key: {
-    type: String
+    type: String,
+    index: true
   }
 }, {
   timestamps: true,

@@ -1,12 +1,9 @@
 import { Router } from 'express'
 import { middleware as query } from 'querymen'
-// import { middleware as body } from 'bodymen'
 import { create, index, show } from './controller'
-// import { schema } from './model'
 export Vdobject, { schema } from './model'
 
 const router = new Router()
-// const { key, value, timestamp } = schema.tree
 
 /**
  * @api {post} /vdobject Create or Update vdobject
@@ -39,7 +36,6 @@ router.get('/',
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Vdobject not found.
  */
-
 router.get('/:myKey',
   query({timestamp: {type: Number}}),
   show)

@@ -3,7 +3,7 @@ import { Vdobject } from '.'
 let vdobject
 
 beforeEach(async () => {
-  vdobject = await Vdobject.create({ key: 'test', versions: [{value: 'test', timestamp: 1537681150 }]})
+  vdobject = await Vdobject.create({key: 'test', versions: [{value: 'test', timestamp: 1537681150}]})
 })
 
 describe('view', () => {
@@ -12,9 +12,7 @@ describe('view', () => {
     expect(typeof view).toBe('object')
     expect(view.id).toBe(vdobject.id)
     expect(view.key).toBe(vdobject.key)
-    // FIXME: move to embedded document
-    // expect(view.value).toBe(vdobject.value)
-    // expect(view.timestamp).toBe(vdobject.timestamp)
+    expect(view.versions).toBe(vdobject.versions)
     expect(view.createdAt).toBeTruthy()
     expect(view.updatedAt).toBeTruthy()
   })
@@ -24,9 +22,7 @@ describe('view', () => {
     expect(typeof view).toBe('object')
     expect(view.id).toBe(vdobject.id)
     expect(view.key).toBe(vdobject.key)
-    // FIXME: move to embedded document
-    // expect(view.value).toBe(vdobject.value)
-    // expect(view.timestamp).toBe(vdobject.timestamp)
+    expect(view.versions).toBe(vdobject.versions)
     expect(view.createdAt).toBeTruthy()
     expect(view.updatedAt).toBeTruthy()
   })

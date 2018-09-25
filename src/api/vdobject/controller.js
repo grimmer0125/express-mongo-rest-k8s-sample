@@ -3,7 +3,7 @@ import { Vdobject } from '.'
 import Debug from 'debug'
 const debug = Debug('verbose')
 
-export const create = (req, res, next) => {
+const checkCreatePostBody = (req, res, next) => {
   let myKey = null
   let value = null
   for (const key in req.body) {
@@ -14,17 +14,26 @@ export const create = (req, res, next) => {
       myKey = null
       value = null
       badRequest(res)('only allow one mykey:value1 pair!')
-      return
+      return {}
     }
   }
 
   if (!myKey) {
     badRequest(res)('no enough data!')
-    return
+    return {}
   }
 
   if (typeof value !== 'object' && typeof value !== 'string') {
     badRequest(res)('value should be string or object!')
+    return {}
+  }
+
+  return {myKey, value}
+}
+
+export const create = (req, res, next) => {
+  const {myKey, value} = checkCreatePostBody(req, res)
+  if (!myKey) {
     return
   }
 
@@ -34,7 +43,7 @@ export const create = (req, res, next) => {
     .then((doc) => {
       if (doc) {
         debug('mykey exist')
-        // case 3: if the timestamp exist, update the versions field
+        // case 1: if the timestamp exist, update the versions field
         for (const version of doc.versions) {
           if (version.timestamp === timestamp) {
             debug('same key and same timestamp, two writing at the same second')
@@ -57,7 +66,7 @@ export const create = (req, res, next) => {
           .then(success(res))
           .catch(next)
       } else {
-        // case 1: create
+        // case 3: create
         debug('create !!' + myKey)
         Vdobject.create({key: myKey, versions: [{value, timestamp}]})
           .then(() => { return { key: myKey, value, timestamp } })
@@ -67,7 +76,6 @@ export const create = (req, res, next) => {
     })
 }
 
-// for debugging
 export const index = (req, res, next) => {
   Vdobject.find()
     .then((vdobjects) => vdobjects.map((vdobject) => vdobject.view()))
@@ -75,51 +83,50 @@ export const index = (req, res, next) => {
     .catch(next)
 }
 
+const queryWithTimeStamp = (res, next, myKey, timestamp) => {
+  debug('query with timestamp !!')
+
+  // NOTE: mongo aggregation might be a little slower than interating by self (O(c1*n)),
+  // althought it should be (O(c2*n)). n is the size of versions. Anyway just use it first
+  Vdobject.aggregate(
+    [
+      {$match: {key: myKey}},
+      {$unwind: '$versions'},
+      {$match: {'versions.timestamp': { $lte: timestamp }}},
+      {$sort: {
+        'versions.timestamp': -1
+      }},
+      {$limit: 1},
+      {$project: {value: '$versions.value'}}]
+  )
+    .then((vdobjects) => {
+      if (vdobjects.length > 0) {
+        return {value: vdobjects[0].value}
+      } else {
+        debug('no matched timestamp or mykey!!')
+        notFound(res)()
+      }
+    }).then(success(res))
+    .catch(next)
+}
+
 export const show = (req, res, next) => {
   const { querymen: { query: { timestamp } } } = req
-  const { params } = req
+  const { params: { myKey } } = req
   if (typeof timestamp === 'number' && timestamp > 0) {
-    console.log('query timestamp !!')
-
-    // NOTE: aggregation might be slower than
-    // interating by self (O(n)), n is the size of versions
-    // just for testing
-    Vdobject.aggregate(
-      [
-        { $match: {key: params.myKey}},
-        { $unwind: '$versions'},
-        { $match: { 'versions.timestamp': { $lte: timestamp }}},
-        { $sort: {
-          'versions.timestamp': -1
-        }},
-        { $limit: 1 },
-        { $project: {value: '$versions.value'}}]
-    )
-      .then((vdobjects) => {
-        if (vdobjects.length > 0) {
-          return {value: vdobjects[0].value}
-        } else {
-          debug('no matched timestamp or mykey!!')
-          notFound(res)()
-        }
-      }).then(success(res))
-      .catch(next)
+    queryWithTimeStamp(res, next, myKey, timestamp)
   } else {
-    Vdobject.findOne({key: params.myKey})
+    debug('query with no timestamp !!')
+    Vdobject.findOne({key: myKey})
       .then(notFound(res))
       .then((vdobject) => {
-        if (vdobject) {
-          // find the most recent value
-          if (vdobject.versions && vdobject.versions.length > 0) {
-            const version = vdobject.versions[vdobject.versions.length - 1]
-            if (version.value) {
-              return {value: version.value}
-            } else {
-              debug('version exist but value disappear, something wrong !!')
-            }
-          } else {
-            debug('no versions !!')
-          }
+        // find the most recent value
+        if (vdobject.versions && vdobject.versions.length > 0) {
+          const version = vdobject.versions[vdobject.versions.length - 1]
+          return {value: version.value}
+        } else {
+          // there is no delete action so this should not happen
+          debug('no versions, something wrong !!')
         }
       }).then(success(res))
       .catch(next)
