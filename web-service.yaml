@@ -6,6 +6,7 @@ metadata:
     run: web
 spec:
   type: LoadBalancer
+  loadBalancerIP: "35.184.217.132"
   ports:
     - port: 80
       targetPort: 3000
