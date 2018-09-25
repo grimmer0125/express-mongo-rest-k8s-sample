@@ -56,7 +56,7 @@ docker run -it --rm -p 3000:3000 --link mongo:mongo -e "MONGODB_URI=mongodb://mo
 
 ### Run Tests
 
-`yarn test`
+Just execute `yarn test`. You don't need to launch MongoDB by yourself since the tests use [MongodbMemoryServer](https://github.com/nodkz/mongodb-memory-server) and will launch a MongoDB instance by themself. 
 
 ## Deployment Kubernetes on Google
 
