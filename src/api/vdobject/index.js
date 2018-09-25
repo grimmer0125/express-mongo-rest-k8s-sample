@@ -12,7 +12,7 @@ const router = new Router()
  * @api {post} /vdobject Create or Update vdobject
  * @apiName CreateVdobject
  * @apiGroup Vdobject
- * @apiParam mykey Vdobject's key with its value
+ * @apiParam mykey Vdobject's key with its value, e.g. {mykey : value1}
  * @apiSuccess {Object} vdobject Vdobject's data.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Vdobject not found.
@@ -31,16 +31,16 @@ router.get('/',
   index)
 
 /**
- * @api {get} /vdobject/:id Retrieve vdobject
+ * @api {get} /vdobject/:myKey Retrieve vdobject
  * @apiName RetrieveVdobject
  * @apiGroup Vdobject
-* @apiUse listParams*
+ * @apiUse listParams
  * @apiSuccess {Object} vdobject Vdobject's data.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Vdobject not found.
  */
 
-router.get('/:id',
+router.get('/:myKey',
   query({timestamp: {type: Number}}),
   show)
 

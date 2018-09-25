@@ -71,7 +71,7 @@ describe('test api /vdobject', () => {
     expect(body.timestamp).toBeGreaterThan(0)
   })
 
-  test('GET /vdobject/:id 200 - exact match timestamp', async () => {
+  test('GET /vdobject/:myKey 200 - exact match timestamp', async () => {
     const { status, body } = await request(app())
       .get(`${apiRoot}/${vdobject.key}?timestamp=${vdobject.timestamp}`)
     expect(status).toBe(200)
@@ -79,7 +79,7 @@ describe('test api /vdobject', () => {
     expect(body.value).toEqual(vdobject.versions[0].value)
   })
 
-  test('GET /vdobject/:id?timestamp 200 - find timestamp <= vary large time', async () => {
+  test('GET /vdobject/:myKey?timestamp 200 - find timestamp <= vary large time', async () => {
     const { status, body } = await request(app())
       .get(`${apiRoot}/${vdobject.key}?timestamp=1937701692`)
     expect(status).toBe(200)

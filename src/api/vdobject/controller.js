@@ -84,7 +84,7 @@ export const show = (req, res, next) => {
     // just for testing
     Vdobject.aggregate(
       [
-        { $match: {key: params.id}},
+        { $match: {key: params.myKey}},
         { $unwind: '$versions'},
         { $match: { 'versions.timestamp': { $lte: timestamp }}},
         { $sort: {
@@ -103,7 +103,7 @@ export const show = (req, res, next) => {
       }).then(success(res))
       .catch(next)
   } else {
-    Vdobject.findOne({key: params.id})
+    Vdobject.findOne({key: params.myKey})
       .then(notFound(res))
       .then((vdobject) => {
         if (vdobject) {
