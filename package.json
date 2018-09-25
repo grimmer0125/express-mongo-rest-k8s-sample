@@ -1,6 +1,6 @@
 {
-  "name": "express-rest",
-  "version": "0.0.0",
+  "name": "express-mongo-rest-k8s-sample ",
+  "version": "0.1.0",
   "main": "src",
   "private": true,
   "scripts": {
