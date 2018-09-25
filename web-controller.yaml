@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: web
+  name: web-controller
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      run: web
+  template:
+    metadata:
+      labels:
+        run: web
+    spec:
+      containers:
+      - image: grimmer0125/express-mongo-rest-sample
+        name: web
+        ports:
+        - containerPort: 3000
+          name: http-server
