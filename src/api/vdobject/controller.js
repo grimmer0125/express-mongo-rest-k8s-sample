@@ -1,4 +1,4 @@
-import { success, notFound } from '../../services/response/'
+import { success, notFound, badRequest } from '../../services/response/'
 import { Vdobject } from '.'
 
 export const create = (req, res, next) => {
@@ -11,18 +11,18 @@ export const create = (req, res, next) => {
     } else {
       myKey = null
       value = null
-      res.status(400).send('only allow one mykey:value pair!')
+      badRequest(res)('only allow one mykey:value1 pair!')
       return
     }
   }
 
   if (!myKey) {
-    res.status(400).send('no enough data!')
+    badRequest(res)('no enough data!')
     return
   }
 
   if (typeof value !== 'object' && typeof value !== 'string') {
-    res.status(400).send('value should be string or object!')
+    badRequest(res)('value should be string or object!')
     return
   }
 

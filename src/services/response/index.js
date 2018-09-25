@@ -12,3 +12,13 @@ export const notFound = (res) => (entity) => {
   res.status(404).end()
   return null
 }
+
+// TODO: add test
+export const badRequest = (res) => (msg) => {
+  if (msg) {
+    res.status(400).send(msg)
+    return null
+  }
+  res.status(400).end()
+  return null
+}
