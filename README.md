@@ -11,7 +11,7 @@ Features:
     - Use Postman (UI) by importing the shared collection
     - Use `jest` (Command line) to run unit tests locally.
     - Use Docker to test quickly.
-- An Restful API example for a key-value storage. Folder structure is borrowed from [generator-rest](https://github.com/diegohaz/generator-rest)
+- An Restful API example for a key-value storage. Folder structure is borrowed from [generator-rest](https://github.com/diegohaz/generator-rest). Unit test is put in each API endpoint folder.
 - Use MongoDB ODM library: Mongoose.
 - Convenient debugging setting via Visual Studio Code, using debugger with breakpoints for codes and tests !!
 
@@ -40,7 +40,7 @@ Alternatively, you can install native MongoDB binary.
 
 1. Launch MongoDB: `docker run -p 27017:27017 -d --name mongo mongo:4.0.2`
 2. Launch current program: `yarn start` or `yarn dev` (live build and launch via `nodemon`)
-3. Use unit test/any other client (e.g. postman/python/go) to test server.
+3. Use unit test/any other client (e.g. curl/postman/python/go) to test server.
 
 **Choose VS Code different debug launch setting to have advanced debugging**
 
@@ -56,7 +56,7 @@ docker run -it --rm -p 3000:3000 --link mongo:mongo -e "MONGODB_URI=mongodb://mo
 
 ### Run Tests
 
-Just execute `yarn test`. You don't need to launch MongoDB by yourself since the tests use [MongodbMemoryServer](https://github.com/nodkz/mongodb-memory-server) and will launch a MongoDB instance by themself. 
+Just execute `yarn test`. You don't need to launch MongoDB by yourself since the tests use [MongodbMemoryServer](https://github.com/nodkz/mongodb-memory-server) and will launch a MongoDB instance by themself.
 
 ## Deployment Kubernetes on Google
 
@@ -68,25 +68,25 @@ Just execute `yarn test`. You don't need to launch MongoDB by yourself since the
 6. Create a static public domain name, `gcloud compute addresses create apiweb-ip --region us-central1`, ref: https://cloud.google.com/kubernetes-engine/docs/tutorials/configuring-domain-name-static-ip
 7. Get `address` part from the output of `gcloud compute addresses describe apiweb-ip --region us-central1`
 8. Modify `loadBalancerIP` field in `web-service.yaml`
-9. Create web K8S service, `kubectl create -f web-service.yaml` 
-10. Build a new docker image for the latest code, `docker build -t grimmer0125/express-mongo-rest-sample .`, you can choose other docker image but you need the `- image:` of `web-controller` to yours. 
-11. Upload this dockre image to Dockerhub or Google Docker registry. 
+9. Create web K8S service, `kubectl create -f web-service.yaml`
+10. Build a new docker image for the latest code, `docker build -t grimmer0125/express-mongo-rest-sample .`, you can choose other docker image but you need the `- image:` of `web-controller` to yours.
+11. Upload this docker image to Docker Hub or Google Docker registry.
 12. Create web-controller pod `kubectl create -f web-controller.yaml`.
 
 Check if the pods work
-- `kubectl get pods` or `kubectl get service` or Google Kubernetes Web Dashboard. 
+- `kubectl get pods` or `kubectl get service` or Google Kubernetes Web Dashboard.
 
-Then use `static public domain name` to test. 
+Then use `static public domain name` to test.
 
-`grimmer0125/express-mongo-rest-sample` is omitting docker registry field so it is for Dockerhub. `gcr.io/my-project/hello-app` includes the registry so it is specifying to Google's. 
+`grimmer0125/express-mongo-rest-sample` is omitting docker registry field so it is for Docker Hub. `gcr.io/my-project/hello-app` includes the registry so it is specifying to Google's.
 
 ### How to upgrade web service
 
 For example: `kubectl set image deployment/web-controller web=grimmer0125/express-mongo-rest-sample:0.9`
 
-### Stop or add more running K8s (Web-Controller) pods 
+### Stop or add more running K8s (Web-Controller) pods
 
-`kubectl scale deployment web-controller --replicas=n`, n = 0 for stop. 
+`kubectl scale deployment web-controller --replicas=n`, n = 0 for stop.
 
 ### Other K8s commands & tips
 
@@ -94,7 +94,7 @@ For example: `kubectl set image deployment/web-controller web=grimmer0125/expres
 - gcloud container clusters list
 - gcloud container clusters get-credentials cluster_name
 
-`selector` field in K8s (e.g. `web-service.yaml`) means it selects other resources to use by this label filter. 
+`selector` field in K8s (e.g. `web-service.yaml`) means it selects other resources to use by this label filter.
 
 ## Backlog
 

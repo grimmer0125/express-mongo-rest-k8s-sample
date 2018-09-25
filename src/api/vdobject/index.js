@@ -10,7 +10,7 @@ const router = new Router()
  * @apiName CreateVdobject
  * @apiGroup Vdobject
  * @apiParam mykey Vdobject's key with its value, e.g. {mykey : value1}
- * @apiSuccess {Object} vdobject Vdobject's data.
+ * @apiSuccess {Object} \{ 'key': 'mykey', 'value': 'value1', 'timestamp': time \}
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Vdobject not found.
  */
@@ -32,12 +32,12 @@ router.get('/',
  * @apiName RetrieveVdobject
  * @apiGroup Vdobject
  * @apiUse listParams
- * @apiSuccess {Object} vdobject Vdobject's data.
+ * @apiSuccess {Object} \{ 'value': value1 \}
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Vdobject not found.
  */
 router.get('/:myKey',
-  query({timestamp: {type: Number}}),
+  query({ timestamp: { type: Number } }),
   show)
 
 export default router
