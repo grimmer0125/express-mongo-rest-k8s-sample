@@ -47,19 +47,15 @@ describe('test api /vdobject', () => {
   })
 
   test('GET /vdobject 200', async () => {
-    console.log('query all vdobjects')
     const { status, body } = await request(app())
       .get(`${apiRoot}`)
     expect(status).toBe(200)
-    console.log('list all:', body)
     expect(Array.isArray(body)).toBe(true)
   })
 
   test('POST /vdobject/ 200 - add/update version for predefined user', async () => {
-    // NOTE: if two posts are within 1s, this will just update the value of the timestamp
-    // await new Promise(resolve => setTimeout(resolve, 1100))
-    console.log('add/update version for predefined user')
-
+    // NOTE: if two posts are sent within 1s, their timestamp will be the same,
+    // server will just update the value of the timestamp
     const { status, body } = await request(app())
       .post(`${apiRoot}`)
       .send({ 123: '7777' })

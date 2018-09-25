@@ -1,5 +1,7 @@
 import { success, notFound, badRequest } from '../../services/response/'
 import { Vdobject } from '.'
+import Debug from 'debug'
+const debug = Debug('verbose')
 
 export const create = (req, res, next) => {
   let myKey = null
@@ -31,11 +33,11 @@ export const create = (req, res, next) => {
   Vdobject.findOne({key: myKey})
     .then((doc) => {
       if (doc) {
-        console.log('mykey exist')
+        debug('mykey exist')
         // case 3: if the timestamp exist, update the versions field
         for (const version of doc.versions) {
           if (version.timestamp === timestamp) {
-            console.log('same key and same timestamp, two writing at the same second')
+            debug('same key and same timestamp, two writing at the same second')
             // just update the value field
             version.timestamp = timestamp
             version.value = value
@@ -48,7 +50,7 @@ export const create = (req, res, next) => {
         }
 
         // case 2, add 1 version to this object
-        console.log('add 1 version to this object')
+        debug('add 1 version to this object')
         doc.versions.push({value, timestamp})
         doc.save()
           .then(() => { return { key: myKey, value, timestamp } })
@@ -56,7 +58,7 @@ export const create = (req, res, next) => {
           .catch(next)
       } else {
         // case 1: create
-        console.log('create !!' + myKey)
+        debug('create !!' + myKey)
         Vdobject.create({key: myKey, versions: [{value, timestamp}]})
           .then(() => { return { key: myKey, value, timestamp } })
           .then(success(res, 201))
@@ -97,7 +99,7 @@ export const show = (req, res, next) => {
         if (vdobjects.length > 0) {
           return {value: vdobjects[0].value}
         } else {
-          console.log('no matched timestamp or mykey!!')
+          debug('no matched timestamp or mykey!!')
           notFound(res)()
         }
       }).then(success(res))
@@ -113,10 +115,10 @@ export const show = (req, res, next) => {
             if (version.value) {
               return {value: version.value}
             } else {
-              console.log('version exist but value disappear, something wrong !!')
+              debug('version exist but value disappear, something wrong !!')
             }
           } else {
-            console.log('no versions !!')
+            debug('no versions !!')
           }
         }
       }).then(success(res))
