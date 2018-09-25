@@ -1,4 +1,4 @@
-# express-rest v0.0.0
+# express-mongo-rest-k8s-sample v0.1.0
 
 
 

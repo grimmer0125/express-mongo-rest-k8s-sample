@@ -64,9 +64,10 @@ Complement later.
 
 ## Backlog
 
+- Add authenticaion.
 - Monitoring & Logs Tools Setup (e.g. Google Stackdriver, AWS Cloudwatch)
 - Use Golang to write stress test
 - Publish to other cloud (e.g. AWS, Azure)
 - CI & CD.
 - Fix minikube (Kubernetes local version) issue, failing to deply locally.
-- Add some MongoDB Indexes.
+- Improve MongoDB setup (e.g. add password and indexes)
