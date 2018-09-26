@@ -90,6 +90,9 @@ For example: `kubectl set image deployment/web-controller web=grimmer0125/expres
 
 ### Other K8s commands & tips
 
+- gcloud auth login
+- gcloud projects list
+- gcloud compute zones list
 - gcloud compute instances list
 - gcloud container clusters list
 - gcloud container clusters get-credentials cluster_name
@@ -100,8 +103,9 @@ For example: `kubectl set image deployment/web-controller web=grimmer0125/expres
 
 - Add authenticaion.
 - Monitoring & Logs Tools Setup (e.g. Google Stackdriver, AWS Cloudwatch)
-- Use Golang to write stress test
+- Use Golang + [Locust](https://locust.io/to) + K8S to write stress test,
 - Publish to other cloud (e.g. AWS, Azure)
 - CI, CD and rolling update of Kubernetes
 - Fix minikube (Kubernetes local version) issue, failing to deply locally.
 - Improve MongoDB setup (e.g. add password and indexes)
+- Use other Database.

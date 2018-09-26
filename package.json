@@ -9,7 +9,7 @@
     "coverage": "yarn test -- --coverage",
     "postcoverage": "opn coverage/lcov-report/index.html",
     "dev": "DEBUG=abc nodemon -i \"*.test.js\" .",
-    "prod": "cross-env NODE_ENV=production nodemon -i \"*.test.js\" -r dotenv-safe/config .",
+    "prod": "cross-env MONGODB_URI=mongodb://localhost:27017/express-rest-dev NODE_ENV=production nodemon -i \"*.test.js\"",
     "lint": "eslint src",
     "docs": "apidoc -i src -o docs && apidoc-markdown -p docs -o DOCS.md",
     "postdocs": "opn docs/index.html"
@@ -24,7 +24,6 @@
     "babel-eslint": "^9.0.0",
     "babel-jest": "^23.6.0",
     "cross-env": "^5.2.0",
-    "dotenv-safe": "^6.0.0",
     "eslint": "^5.6.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.14.0",
