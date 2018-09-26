@@ -8,7 +8,7 @@
     "test": "jest",
     "coverage": "yarn test -- --coverage",
     "postcoverage": "opn coverage/lcov-report/index.html",
-    "dev": "DEBUG=abc nodemon -i \"*.test.js\" .",
+    "dev": "DEBUG=verbose nodemon -i \"*.test.js\" .",
     "prod": "cross-env MONGODB_URI=mongodb://localhost:27017/express-rest-dev NODE_ENV=production nodemon -i \"*.test.js\"",
     "lint": "eslint src",
     "docs": "apidoc -i src -o docs && apidoc-markdown -p docs -o DOCS.md",

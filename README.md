@@ -39,7 +39,7 @@ Install Node.js module dependencies:
 Alternatively, you can install native MongoDB binary.
 
 1. Launch MongoDB: `docker run -p 27017:27017 -d --name mongo mongo:4.0.2`
-2. Launch current program: `yarn start` or `yarn dev` (live build and launch via `nodemon`)
+2. Launch current program: `yarn start` or `yarn dev` (which prints debug logs and use live build+launch via `nodemon`)
 3. Use unit test/any other client (e.g. curl/postman/python/go) to test server.
 
 **Choose VS Code different debug launch setting to have advanced debugging**
