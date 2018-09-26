@@ -11,7 +11,7 @@ Features:
     - Use Postman (UI) by importing the shared collection
     - Use `jest` (Command line) to run unit tests locally.
     - Use Docker to test quickly.
-- An Restful API example for a key-value storage. Folder structure is borrowed from [generator-rest](https://github.com/diegohaz/generator-rest). Unit test is put in each API endpoint folder.
+- An Restful API example for a key-value storage. Directory structure & partial setting (e.g. apidoc, [query string utility](https://github.com/diegohaz/querymen)) is borrowed from [generator-rest](https://github.com/diegohaz/generator-rest). Each **API endpoint** has its own folder, containing model, controller, router and test flies.
 - Use MongoDB ODM library: Mongoose.
 - Convenient debugging setting via Visual Studio Code, using debugger with breakpoints for codes and tests !!
 
@@ -56,7 +56,7 @@ docker run -it --rm -p 3000:3000 --link mongo:mongo -e "MONGODB_URI=mongodb://mo
 
 ### Run Tests
 
-Just execute `yarn test`. You don't need to launch MongoDB by yourself since the tests use [MongodbMemoryServer](https://github.com/nodkz/mongodb-memory-server) which is [jest](recommended by https://jestjs.io/docs/en/mongodb) and will launch a special MongoDB instance by itself.
+Just execute `yarn test`. You don't need to launch MongoDB by yourself since the tests use [MongodbMemoryServer](https://github.com/nodkz/mongodb-memory-server) which is recommended by [jest](https://jestjs.io/docs/en/mongodb) and will launch a special MongoDB instance by itself.
 
 p.s. keep in mind that you many encounter some unexpected test results when you use VS Code to debug the tests with some breakpoints, there are some async-issue. If this happens, just use console (`yarn test`) to check it again.
 
@@ -81,6 +81,8 @@ Check if the pods work
 Then use `static public domain name` to test.
 
 p.s.
+
+You many ignore region/zone options (e.g. `-zone us-central1-b`) in some commands since you setup default region in the 1st step. (e.g. `gcloud config set compute/zone us-central1-b`)
 
 Some flow are referenced from https://github.com/kubernetes/examples/tree/master/staging/nodesjs-mongodb whose setting can not directly be applied since it is outdated.
 
