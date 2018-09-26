@@ -1,19 +1,21 @@
 # Express Mongo Rest K8s Sample
 
 Features:
-- Use Kubernete settings to deploy to Google Kubernetes Engine and it is easily to deploy to AWS, Azure. It is portable.   
+- Add Kubernete settings to deploy to Google Kubernetes Engine and it is easily to deploy to AWS, Azure. It is portable.   
 - Kubernete features used in this project:
-    - auto heal
-    - load balance
-    - service discovery
+    - Auto heal (which auto-restart crashed servers)
+    - Load balance (2 VM nodes with 2 K8s pods setup)
+    - Service discovery (Node.js <-> MongoDB)
 - API documents generated from comments.   
 - Convenient Testing or Playing. For example,
     - Use Postman (UI) by importing the shared collection
     - Use `jest` (Command line) to run unit tests locally.
     - Use Docker to test quickly.
 - An Restful API example for a key-value storage. Directory structure & partial setting (e.g. apidoc, [query string utility](https://github.com/diegohaz/querymen)) is borrowed from [generator-rest](https://github.com/diegohaz/generator-rest). Each **API endpoint** has its own folder, containing model, controller, router and test flies.
+- Use ES6 module system (import, export) via Babel.
 - Use MongoDB ODM library: Mongoose.
-- Convenient debugging setting via Visual Studio Code, using debugger with breakpoints for codes and tests !!
+- Add Convenient debugging setting via [Visual Studio Code](https://code.visualstudio.com/), using debugger with breakpoints for codes and tests !!
+- Add [debug](https://www.npmjs.com/package/debug) module to define log levels
 
 ## Links
 
@@ -28,8 +30,8 @@ This is developed on macOS but should work well on other platforms.
 ### Prerequisites & environment setup
 
 Install first:
-- Node (v8+) & [Yarn](https://yarnpkg.com/en/) instead of npm.
-- Docker (optional): used to depoly K8s cluster and run MongoDB locally.
+- Node (v8+) & [Yarn](https://yarnpkg.com/en/) instead of npm. Yarn is much faster.
+- [Docker](https://docs.docker.com/install/#supported-platforms) (optional): used to depoly K8s cluster and run MongoDB locally.
 
 Install Node.js module dependencies:
 `yarn install`
@@ -63,7 +65,7 @@ p.s. keep in mind that you many encounter some unexpected test results when you 
 ## Deployment Kubernetes on Google
 
 1. Setup K8s account, tool : follow https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app until `Set defaults for the gcloud command-line tool`.
-2. Create a K8s cluster, `gcloud container clusters create dragon-cluster3 --num-nodes=2 --disk-size 10`, after creating, the  `kubectrl` will switch to the cluster.
+2. Create a K8s cluster, `gcloud container clusters create my-first-cluster --num-nodes=2 --disk-size 10`, after creating, the  `kubectrl` will switch to the cluster.
 3. Create MongoDB K8S service for the current cluster, `kubectl create -f mongo-service.yaml`
 4. Create a Google compute disk for MongoDB, `gcloud compute disks create --size=2GB -zone "us-central1-b" mongo-disk`
 5. Create MongoDB single pod (no replicate) `kubectl create -f mongo-controller.yaml`
@@ -117,3 +119,4 @@ For example: `kubectl set image deployment/web-controller web=grimmer0125/expres
 - Fix minikube (Kubernetes local version) issue, failing to deply locally.
 - Improve MongoDB setup (e.g. add password and indexes)
 - Use other Database.
+- Add [TypeScript](https://www.typescriptlang.org/) to have offline compilation, static type checking and so on
