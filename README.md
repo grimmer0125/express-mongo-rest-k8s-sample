@@ -64,14 +64,16 @@ p.s. keep in mind that you many encounter some unexpected test results when you 
 
 ## Deployment Kubernetes on Google
 
+It uses K8s ver. 1.9.7-gke.6 and steps:
+
 1. Setup K8s account, tool : follow https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app until `Set defaults for the gcloud command-line tool`.
 2. Create a K8s cluster, `gcloud container clusters create my-first-cluster --num-nodes=2 --disk-size 10`, after creating, the  `kubectrl` will switch to the cluster.
 3. Create MongoDB K8S service for the current cluster, `kubectl create -f mongo-service.yaml`
 4. Create a Google compute disk for MongoDB, `gcloud compute disks create --size=2GB -zone "us-central1-b" mongo-disk`
 5. Create MongoDB single pod (no replicate) `kubectl create -f mongo-controller.yaml`
-6. Create a static public domain name, `gcloud compute addresses create apiweb-ip --region us-central1`, ref: https://cloud.google.com/kubernetes-engine/docs/tutorials/configuring-domain-name-static-ip
-7. Get `address` part from the output of `gcloud compute addresses describe apiweb-ip --region us-central1`
-8. Modify `loadBalancerIP` field in `web-service.yaml`
+6. (optional) Create a static public domain name, `gcloud compute addresses create apiweb-ip --region us-central1`, ref: https://cloud.google.com/kubernetes-engine/docs/tutorials/configuring-domain-name-static-ip
+7. (optional) Get `address` part from the output of `gcloud compute addresses describe apiweb-ip --region us-central1`
+8. (optional) Modify `loadBalancerIP` field in `web-service.yaml`. You can ignore these 3 steps (and remove this field) to use non-static externalIP, which means your exposed IP of web service may change due to any reasons, e.g. you upgrade google K8S cluster version from its web dashboard.
 9. Create web K8S service, `kubectl create -f web-service.yaml`
 10. Build a new docker image for the latest code, `docker build -t grimmer0125/express-mongo-rest-sample .`, you can choose other docker image but you need the `- image:` of `web-controller` to yours.
 11. Upload this docker image to Docker Hub or Google Docker registry.
@@ -98,7 +100,7 @@ For example: `kubectl set image deployment/web-controller web=grimmer0125/expres
 
 `kubectl scale deployment web-controller --replicas=n`, n = 0 for stop.
 
-### Other K8s commands & tips
+### Other gcloud commands & tips
 
 - gcloud auth login
 - gcloud projects list
@@ -106,6 +108,42 @@ For example: `kubectl set image deployment/web-controller web=grimmer0125/expres
 - gcloud compute instances list
 - gcloud container clusters list
 - gcloud container clusters get-credentials cluster_name
+
+## Deployment Local Kubernetes cluster - minikube
+
+Install minikube: https://github.com/kubernetes/minikube#installation, it is minikube version: v0.28.2 now and uses K8s v1.10.0 by default, 201809.
+
+Run minikube which launches a VM: `minikube start`.
+
+Setup & run local K8s cluster:
+1. `kubectl create -f mongo-service.yaml`
+2. `kubectl create -f mongo-controller-minikube.yaml` (You don't need to setup Google compute disk for MongoDB.)
+3. `kubectl create -f web-service-minikube.yaml` (Remove `loadBalancerIP`)
+4. `kubectl create -f web-controller.yaml`
+
+`kubectl get service` will output `EXTERNAL-IP` is `<pending>` and it is OK. Type `minikube service web --url` will get the final URL we can use, e.g. `http://192.168.99.100:30778`
+
+Use this url to test the API endpoint, `http://192.168.99.100:30778/vdobject`.
+
+Stop steps:
+1. `kubectl delete service mongo`
+2. `kubectl delete service web`
+3. `kubectl delete deployment mongo-controller`
+4. `kubectl delete deployment web-controller`
+3. `minikube stop`
+
+Use `minikube status` to check its status.
+
+### Some K8s commands & tips
+
+* `kubectl run hello-minikube --image=k8s.gcr.io/echoserver:1.4 --port=8080` use command to create a deployment, instead of using `kubectl create -f xx.yaml`.
+* `kubectl expose deployment hello-minikube --type=NodePort` use command to create a service.
+* use `kubectl config get-contexts` & `kubectl config use-context CONTEXT_NAME` to switch the current working cluster among differenct google clusters and minikube for `kubectl`
+* `kubectl logs`
+* `kubectl get <podname>` (check status)
+* `kubectl describe <podname>` (to check create errors)
+* `kubectl get endpoints mongo` (check if a service selects some pods successfully), from https://kubernetes.io/docs/tasks/debug-application-cluster/debug-service/
+* `kubectl get all`
 
 `selector` field in K8s (e.g. `web-service.yaml`) means it selects other resources to use by this label filter.
 
@@ -116,7 +154,7 @@ For example: `kubectl set image deployment/web-controller web=grimmer0125/expres
 - Use Golang + [Locust](https://locust.io/to) + K8S to write stress test,
 - Publish to other cloud (e.g. AWS, Azure)
 - CI, CD and rolling update of Kubernetes
-- Fix minikube (Kubernetes local version) issue, failing to deply locally.
+- ~~Fix minikube (Kubernetes local version) issue, failing to deply locally.~~
 - Improve MongoDB setup (e.g. add password and indexes)
 - Use other Database.
 - Add [TypeScript](https://www.typescriptlang.org/) to have offline compilation, static type checking and so on
