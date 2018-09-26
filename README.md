@@ -151,7 +151,7 @@ Use `minikube status` to check its status.
 
 - Add authenticaion.
 - Monitoring & Logs Tools Setup (e.g. Google Stackdriver, AWS Cloudwatch)
-- Use Golang + [Locust](https://locust.io/to) + K8S to write stress test,
+- Use Golang + [Locust](https://locust.io/) + K8S to write stress test,
 - Publish to other cloud (e.g. AWS, Azure)
 - CI, CD and rolling update of Kubernetes
 - ~~Fix minikube (Kubernetes local version) issue, failing to deply locally.~~
