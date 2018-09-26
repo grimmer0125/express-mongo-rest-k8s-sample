@@ -56,7 +56,9 @@ docker run -it --rm -p 3000:3000 --link mongo:mongo -e "MONGODB_URI=mongodb://mo
 
 ### Run Tests
 
-Just execute `yarn test`. You don't need to launch MongoDB by yourself since the tests use [MongodbMemoryServer](https://github.com/nodkz/mongodb-memory-server) and will launch a MongoDB instance by themself.
+Just execute `yarn test`. You don't need to launch MongoDB by yourself since the tests use [MongodbMemoryServer](https://github.com/nodkz/mongodb-memory-server) which is [jest](recommended by https://jestjs.io/docs/en/mongodb) and will launch a special MongoDB instance by itself.
+
+p.s. keep in mind that you many encounter some unexpected test results when you use VS Code to debug the tests with some breakpoints, there are some async-issue. If this happens, just use console (`yarn test`) to check it again.
 
 ## Deployment Kubernetes on Google
 
@@ -77,6 +79,10 @@ Check if the pods work
 - `kubectl get pods` or `kubectl get service` or Google Kubernetes Web Dashboard.
 
 Then use `static public domain name` to test.
+
+p.s.
+
+Some flow are referenced from https://github.com/kubernetes/examples/tree/master/staging/nodesjs-mongodb whose setting can not directly be applied since it is outdated.
 
 `grimmer0125/express-mongo-rest-sample` is omitting docker registry field so it is for Docker Hub. `gcr.io/my-project/hello-app` includes the registry so it is specifying to Google's.
 
