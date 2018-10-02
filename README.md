@@ -66,7 +66,16 @@ p.s. keep in mind that you many encounter some unexpected test results when you 
 
 It uses K8s ver. 1.9.7-gke.6 and steps:
 
-1. Setup K8s account, tool : follow https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app until `Set defaults for the gcloud command-line tool`.
+1. Do the first few steps of https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app
+    1. Create or select a project of [Google Kubernetes Engine](https://console.cloud.google.com/projectselector/kubernetes?_ga=2.131589903.-180865399.1536996773&_gac=1.49154772.1537804457.Cj0KCQjwlqLdBRCKARIsAPxTGaVEvNx4RkTjsIG58GFcdH7BjY_GSF9qJ7KyTO2ZeVgUaYoaW_kqUbkaAkKxEALw_wcB) page and enable its [billing](https://cloud.google.com/billing/docs/how-to/modify-project).
+    2. Tool: 
+        1. Use [Google Cloud Shell](https://cloud.google.com/shell). **OR** 
+        2. Install the [Google Cloud SDK](https://cloud.google.com/sdk/docs/quickstarts), which includes the `gcloud` command-line tool. Install kubectl (`gcloud components install kubectl`), [Docker](https://docs.docker.com/engine/installation/).
+    3. Set defaults (project, compute/zone)for the gcloud: 
+        ```
+        gcloud config set project PROJECT_ID`, 
+        gcloud config set compute/zone us-central1-b` 
+        ```
 2. Create a K8s cluster, `gcloud container clusters create my-first-cluster --num-nodes=2 --disk-size 10`, after creating, the  `kubectrl` will switch to the cluster.
 3. Create MongoDB K8S service for the current cluster, `kubectl create -f mongo-service.yaml`
 4. Create a Google compute disk for MongoDB, `gcloud compute disks create --size=2GB -zone "us-central1-b" mongo-disk`
