@@ -4,7 +4,7 @@ Features:
 - Add Kubernete settings to deploy to Google Kubernetes Engine and it is easily to deploy to AWS, Azure. It is portable.   
 - Kubernete features used in this project:
     - Auto heal (which auto-restart crashed servers)
-    - Load balance (2 VM nodes with 2 K8s pods setup)
+    - Load balance for web (API) server (2 VM nodes with 2 K8s pods setup)
     - Service discovery (Node.js <-> MongoDB)
 - API documents generated from comments.   
 - Convenient Testing or Playing. For example,
@@ -164,6 +164,6 @@ Use `minikube status` to check its status.
 - Publish to other cloud (e.g. AWS, Azure)
 - CI, CD and rolling update of Kubernetes
 - ~~Fix minikube (Kubernetes local version) issue, failing to deply locally.~~
-- Improve MongoDB setup (e.g. add password and indexes)
+- Improve MongoDB setup (e.g. add password, indexe, replica set)
 - Use other Database.
 - Add [TypeScript](https://www.typescriptlang.org/) to have offline compilation, static type checking and so on
